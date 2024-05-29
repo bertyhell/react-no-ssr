@@ -1,25 +1,11 @@
-import React from 'react';
+import { FC, ReactNode, useEffect, useState } from 'react';
 
-const DefaultOnSSR = () => (<span></span>);
+export const NoServerSideRendering: FC<NoSsrProps> = ({ children, onSSR = <span /> }) => {
+	const [renderChildren, setRenderChildren] = useState(false);
 
-class NoSSR extends React.Component {
-  constructor(...args) {
-    super(...args);
-    this.state = {
-      canRender: false
-    };
-  }
+	useEffect(() => {
+		setRenderChildren(true);
+	}, []);
 
-  componentDidMount() {
-    this.setState({canRender: true});
-  }
-
-  render() {
-    const { children, onSSR = <DefaultOnSSR />} = this.props;
-    const { canRender } = this.state;
-
-    return canRender ? children : onSSR;
-  }
-}
-
-export default NoSSR;
+	return renderChildren ? children : onSSR;
+};
